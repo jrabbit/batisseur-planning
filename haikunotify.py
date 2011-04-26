@@ -2,7 +2,8 @@ import os
 import platform
 from subprocess import *
 
-if platform.system() is not 'Haiku':
+if platform.system() != 'Haiku':
+    print "This is for Haiku, not %s" %platform.system()
     raise OSError
     
 def send_notification(message, title, kind="information", app="PyHaikuNotify", **kwargs):
