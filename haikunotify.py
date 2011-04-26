@@ -13,6 +13,7 @@ def send_notification(message, title, kind="information", app="PyHaikuNotify", *
             options += ' --%s %s' % (arg, kwargs[arg])
     
     #Do the notification
+    print ['notify' ]+ [options] + [message]
     Popen(['notify' ]+ [options] + [message], stdout=PIPE).communicate()
 
 
