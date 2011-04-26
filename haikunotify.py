@@ -14,7 +14,7 @@ def send_notification(message, title, kind="information", app="PyHaikuNotify", *
     options + " " + message
     #Do the notification
     print ['notify' ]+ [options]
-    Popen(['notify' ]+ [options], stdout=PIPE).communicate()
+    Popen(['notify']+ options.split(), stdout=PIPE).communicate()
 
 
 if __name__ == '__main__':
