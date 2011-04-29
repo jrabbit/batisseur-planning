@@ -12,7 +12,6 @@ def send_notification(message, title, kind="information", app="PyHaikuNotify", *
         if arg in ['messageid', 'progress', 'timeout', 'icon', 'onClickApp', 'onClickFile', 'onClickRef','onClickArgv']:
             options += ' --%s %s' % (arg, kwargs[arg])
     #Do the notification
-    print ['notify' ]+ [options]
     Popen(['notify']+ options.split() + message.split(), stdout=PIPE).communicate()
 
 
