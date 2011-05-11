@@ -23,4 +23,8 @@ Notes
 -----
 Ubuntu's implementation uses Python, Haiku nightlies don't have python by default. This could change. (Unlikely)
 
+Haiku's Alpha images have python. I can test for it in ~/.profile.
+
+http://dev.haiku-os.org/browser/haiku/trunk/data/etc/profile
+
 [#1]: http://www.tldp.org/LDP/abs/html/bashver4.html
