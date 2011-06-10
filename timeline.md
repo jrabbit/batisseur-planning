@@ -13,7 +13,7 @@ Quarter-term (June 13) -
  
 *   Package maintainer scripts start to form around this basic pushing
  
-*   Beginning of a "build drone" [python] that listens on the storage mechanism for a new job, uploads results back to the storage.
+*   Beginning of a "build drone" [python] that listens on the storage mechanism for a new job, uploads results back to the storage. [Could report back to Jenkins]
  
  
 Mid-term (July 11) - 
