@@ -4,7 +4,7 @@ import json
 
 @route('/achieve/:username/:number')
 def got_acheivement(username,number):
-    user(username).achieve(number)
+    user(username).achieve(int(number))
 
 @route('/user/:username')
 def userpage(username):
@@ -25,7 +25,7 @@ def get_db(name="achievers"):
 @route('/index.html')
 @route('/ranking/:number')
 def index(number=5):
-    top = getranks()[:number]
+    top = getranks()[:int(number)]
     return template('scores.tpl', top)
 
 def getranks():
@@ -51,8 +51,10 @@ class user():
             self.achievements = 0
         self.name = name
     def achieve(self, number):
-        self.db[self.name] = json.dumps(json.loads(self.db[self.name]).append(number))
-        self.acheivements = json.loads(self.db[name])
+        x = json.loads(self.db[self.name])
+        x.append(number)
+        self.db[self.name] = json.dumps(x)
+        self.acheivements = json.loads(self.db[self.name])
 
 @route('/js/:filename')
 def js_static(filename):
