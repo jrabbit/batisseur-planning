@@ -23,9 +23,10 @@ def get_db(name="achievers"):
 
 @route('/')
 @route('/index.html')
-def index():
-    top5 = getranks()[:5]
-    return template('scores.tpl', top5)
+@route('/ranking/:number')
+def index(number=5):
+    top = getranks()[:number]
+    return template('scores.tpl', top)
 
 def getranks():
     """Return sorted dict of users."""
@@ -59,9 +60,11 @@ def js_static(filename):
 @route('/css/:filename#.+#')
 def css_static(filename):
     return static_file(filename, root='./css')
-@route('/db')
-def debug_db():
-    return dict(get_db())
+
 if __name__ == '__main__':
+    
+    @route('/db')
+    def debug_db():
+        return dict(get_db())
     debug(True)
     run(host='localhost', port=8080, reloader=True)
