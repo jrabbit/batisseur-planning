@@ -1,6 +1,8 @@
 #Achievements for haiku packages
 import anydbm
 import os
+from urllib2 import urlopen
+
 import haikunotify
 
 def get_db(app="haikuports", name="achievements"):
@@ -9,9 +11,9 @@ def get_db(app="haikuports", name="achievements"):
     return anydbm.open(os.path.join(directory, name), 'c')
 
 
-def acheive():
-    pass
+def web_acheive(username, number):
+    urlopen("http://scoreboard.haiku-os.org/%s/%s" %(username, number))
+
 
 def notify(ach):
     haikunotify.send_notification(ach, "You Acheived!")
-    # TODO: notfiy the website.
