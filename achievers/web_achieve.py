@@ -47,11 +47,11 @@ class user():
         if name in self.db:
             self.achievements = json.loads(self.db[name])
         else:
-            self.db[name] = json.dumps(0)
+            self.db[name] = json.dumps([0])
             self.achievements = 0
         self.name = name
-    def achieve(number):
-        self.db[self.name] = json.dumps(json.loads(db[self.name]) + [number])
+    def achieve(self, number):
+        self.db[self.name] = json.dumps(json.loads(self.db[self.name]).append(number))
         self.acheivements = json.loads(self.db[name])
 
 @route('/js/:filename')
