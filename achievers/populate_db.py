@@ -4,7 +4,7 @@ import string
 def makenames():
     for x in range(5):
         name = names().next()
-        print urlopen("http://localhost:8080/json/%s" % name)
+        urlopen("http://localhost:8080/json/%s" % name)
 def names():
     name = ""
     while len(name) < 5:
