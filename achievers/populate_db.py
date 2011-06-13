@@ -1,20 +1,14 @@
 from urllib2 import urlopen
-from tempfile import _RandomNameSequence
-
+import random
+import string
 def makenames():
-    randomnames = []
-    for x in names():
-        if len(randomnames) < 7:
-            randomnames.append(x) 
-    for name in randomnames:
+    for x in range(5):
+        name = names().next()
         print urlopen("http://localhost:8080/json/%s" % name)
 def names():
-    characters = ("abcdefghijklmnopqrstuvwxyz" +
-                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                  "0123456789_")
     name = ""
     while len(name) < 5:
-        ''.join(random.choice(characters))
+        name = name + random.choice(string.ascii_letters)
     yield name
 if __name__ == '__main__':
     makenames()
