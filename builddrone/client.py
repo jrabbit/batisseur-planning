@@ -15,16 +15,19 @@ class drone_proto(Protocol):
     def dataReceived(self, data):
         #Parse function calls
         obj = json_loads(data)
-        if 'call' in obj:
-            if 'args' in obj:
-                args = eval(obj['args'])
-                eval(obj['call'])(args)
-            else:
-                eval(obj['call'])()
+        # if 'call' in obj:
+        #     if 'args' in obj:
+        #         args = eval(obj['args'])
+        #         eval(obj['call'])(args)
+        #     else:
+        #         eval(obj['call'])()
+        if 'new-rev' in obj:
+            new_build(obj['new-rev'])
     def json_send(self, obj):
         self.transport.write(json.dumps(obj) + "\r\n")
     
-
+def new_build(project):
+    pass
 
 if __name__ == '__main__':
     factory = Factory()
