@@ -13,8 +13,14 @@ class drone_proto(Protocol):
         json_send({'version': __VERSION__, 'os': platform.system(), 
         'revision': platform.platform()})
     def dataReceived(self, data):
+        #Parse function calls
         obj = json_loads(data)
-        
+        if 'call' in obj:
+            if 'args' in obj:
+                args = eval(obj['args'])
+                eval(obj['call'])(args)
+            else:
+                eval(obj['call'])()
     def json_send(self, obj):
         self.transport.write(json.dumps(obj) + "\r\n")
     
