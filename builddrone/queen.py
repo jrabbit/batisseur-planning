@@ -25,4 +25,10 @@ def named_pkg(name):
         
 class Job():
     def __init__(self, name):
-        self.start = 
+        self.start =  time.localtime()
+        self.name = name
+        self.vcs = self.lookup_vcs(name)
+    def lookup_vcs(name):
+        "Which VCS does the build use?"
+        #Gorram Brecht, we needed that parser for real beps.
+        pass
