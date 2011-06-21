@@ -1,6 +1,7 @@
 # Recieves post-push information from github/etc and communicates the new versions and blob refs.
 # Upload to Camlistore with git info, this allows users to vouch for it.
 import time
+from redish.client import Client
 from bottle import route, run, static_file, debug, template, default_app, request
 import camli.op
 # TODO: How to share blob refs sanely? [Simple http/json]
@@ -22,13 +23,28 @@ def availible_jobs(name="All"):
 @route('/pkg/:name')
 def named_pkg(name):
     return availible_jobs(name=name)        
-        
-class Job():
-    def __init__(self, name):
+
+def get_db():
+    return Client()
+
+class Job(object):
+    def __init__(self, name, developer=0):
+        d = get_db()
         self.start =  time.localtime()
         self.name = name
+        if developer
+            self.dev = d[name] = {'Developer': developer}
+        else:
+            self.dev = d[name]['Developer']
         self.vcs = self.lookup_vcs(name)
     def lookup_vcs(name):
         "Which VCS does the build use?"
+        d = get_db()
+        if name in d:
+            return d[name]
+        else:
+            return "haikuports"
+        #This is the VCS of the development/source of the package 
+        #not of the software within
         #Gorram Brecht, we needed that parser for real beps.
-        pass
+    
