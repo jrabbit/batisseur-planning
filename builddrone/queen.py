@@ -28,20 +28,25 @@ def get_db():
     return Client()
 
 class Job(object):
-    def __init__(self, name, developer=0):
-        d = get_db()
+    def __init__(self, name, database):
         self.start =  time.localtime()
         self.name = name
-        if developer
-            self.dev = d[name] = {'Developer': developer}
-        else:
-            self.dev = d[name]['Developer']
+        self.database = database
         self.vcs = self.lookup_vcs(name)
-    def lookup_vcs(name):
+    def __setattr__(self, name, value):
+        self.database[name] = value
+    def __getattr__(self,name):
+        try:
+            return self.database[name]
+        except:
+             raise AttributeError
+    def __delattr__(self, name):
+        del self.database[name]
+    def lookup_vcs(self, name):
         "Which VCS does the build use?"
-        d = get_db()
-        if name in d:
-            return d[name]
+        d = self.database
+        if name in d['vcs']:
+            return d['vcs'][name]
         else:
             return "haikuports"
         #This is the VCS of the development/source of the package 
