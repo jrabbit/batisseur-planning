@@ -1,5 +1,5 @@
 import json
-
+import sys
 # class New_Bep(object):
 #     def __init__(self, bep):
 #         self.data = {}
@@ -36,3 +36,6 @@ class Old_Bep(object):
             if '}' in x:
                 return int(i2+i + 1)
                 break
+if __name__ == '__main__':
+    if sys.argv[1] = '-json':
+        print json.dumps(Old_Bep(sys.argv[2]))
