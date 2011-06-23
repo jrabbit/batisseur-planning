@@ -1,0 +1,12 @@
+[A lot of commits have happened since I last blogged on my GSOC Project.](https://github.com/jrabbit/batisseur-planning/commits/master) The big hitters are:
+
+ * the framework of a rankings website for users' point totals
+ * A non-regex parser I wrote because I'm impatient (I'm going to test its speed.)
+ * The begining of the http server that will inform user's builddrones of availible jobs (builds) [Basically it tells you if packages have been updated so you can build them]
+ * Verified that Camlistore (on python) can work on Haiku.
+ * A Jenkins API wrapper for magic to happen (I think it may be the perfect thing to handle build logs and results)
+ * Redis
+ * Redis
+ * Redis
+
+Progress is coming along, I recently [On the 15th] returned from a tour of France. There is a second period later in the summer I'll have unknown-connectivity, but I'll still be coding then.
