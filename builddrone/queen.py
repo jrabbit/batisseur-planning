@@ -36,8 +36,9 @@ def new_commit(name, payload):
     if name not in db.keys():
         pass
     else:
-        db['name']['last-commit'] = time.time()
-        db['name']['revs'][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
+        branch = payload['ref'][11:]
+        db['name']['revs'][branch]['last-commit'] = time.time()
+        db['name']['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
 
 def get_db():
     return Client()
