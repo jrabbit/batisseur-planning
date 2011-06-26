@@ -37,8 +37,8 @@ def new_commit(name, payload):
         pass
     else:
         branch = payload['ref'][11:]
-        db['name']['revs'][branch]['last-commit'] = time.time()
-        db['name']['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
+        db[name]['revs'][branch]['last-commit'] = time.time()
+        db[name]['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
 
 def get_db():
     return Client()
