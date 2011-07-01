@@ -19,9 +19,11 @@ from bottle import route, run, static_file, debug, template, default_app, reques
 def availible_jobs(name="All"):
     db = get_db()
     if name is not "All":
-        return Job(name)
+        q = dict(db[name]) #force json?
+        q['meta-name'] = name
+        return q
     else:
-        pass
+        
 
 @route('/pkg/:name')
 def named_pkg(name):
@@ -61,6 +63,13 @@ class Job(object):
              raise AttributeError
     def __delattr__(self, key):
         del self.database[self.name][key]
+    def give(self):
+        "Yield an actionable job?"
+        ids = []
+        for branch in self.database[self.name]:
+            br = self.database[self.name]['revs'][branch]
+            ids = ids + [rev for rev in br if br[rev]['Builds'] == 0]
+        return ids
     def lookup_vcs(self):
         "Which VCS does the build use?"
         d = self.database
