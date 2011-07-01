@@ -1,5 +1,9 @@
-from subprocess import PIPE, Popen, check_output, call
-
+import platform
+if platform.python_version_tuple()[:2] == ('2', '6'):
+    from subprocess import PIPE, Popen, call
+else:
+    from subprocess import PIPE, Popen, check_output, call
+    
 def haikuporter_build(package):
     return Popen(['haikuporter', '-g', '-v', '-y', '-c', '-d', package], stdout=PIPE).communicate()
 
