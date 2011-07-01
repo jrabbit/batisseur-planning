@@ -17,9 +17,11 @@ from bottle import route, run, static_file, debug, template, default_app, reques
 
 @route('/jobs')
 def availible_jobs(name="All"):
+    db = get_db()
     if name is not "All":
-        return jobs[name]
-    pass
+        return db[name]['revs']
+    else:
+        pass
 
 @route('/pkg/:name')
 def named_pkg(name):
