@@ -19,7 +19,7 @@ from bottle import route, run, static_file, debug, template, default_app, reques
 def availible_jobs(name="All"):
     db = get_db()
     if name is not "All":
-        return db[name]['revs']
+        return Job(name)
     else:
         pass
 
@@ -39,7 +39,8 @@ def new_commit(name, payload):
         pass
     else:
         branch = payload['ref'][11:]
-        db[name]['revs'][branch]['last-commit'] = time.time()
+        db[name]['revs'][branch]['last-commit'] = (time.time(), payload['commits'][0]['id'])
+        #Tuple of time of commit and commit ID.
         db[name]['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
 
 def get_db():
@@ -50,21 +51,21 @@ class Job(object):
         self.start =  time.localtime()
         self.name = name
         self.database = database
-        self.vcs = self.lookup_vcs(name)
-    def __setattr__(self, name, value):
-        self.database[name] = value
-    def __getattr__(self,name):
+        self.vcs = self.lookup_vcs()
+    def __setattr__(self, key, value):
+        self.database[self.name][key] = value
+    def __getattr__(self,key):
         try:
-            return self.database[name]
+            return self.database[self.name][key]
         except:
              raise AttributeError
-    def __delattr__(self, name):
-        del self.database[name]
-    def lookup_vcs(self, name):
+    def __delattr__(self, key):
+        del self.database[self.name][key]
+    def lookup_vcs(self):
         "Which VCS does the build use?"
         d = self.database
-        if name in d['vcs']:
-            return d['vcs'][name]
+        if self.name in d['vcs']:
+            return d['vcs'][self.name]
         else:
             return "haikuports"
         #This is the VCS of the development/source of the package 
