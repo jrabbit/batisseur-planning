@@ -1,5 +1,5 @@
 from bottle import route, run, static_file, debug, template, default_app, request
-import anydbm
+from redish.client import Client
 import json
 
 @route('/achieve/:username/:number')
@@ -10,27 +10,29 @@ def got_acheivement(username,number):
 def userpage(username):
     u = user(username)
     return template("achievers.tpl", user=u.name, acheivements=maketable(user.achievements))
-    def maketable(obj):
-        # TODO: Is there a html table generator?
-        pass
+
 
 @route('/json/:username')
 def show_user(username):
     return user(username).achievements
 
-def get_db(name="achievers"):
-    return anydbm.open(name, 'c')
+
+def get_db():
+    return Client()
 
 @route('/')
 @route('/index.html')
 @route('/ranking/:number')
 def index(number=5):
-    top = getranks()[:int(number)]
-    return template('scores.tpl', top)
+    top = getranks()
+    html= ""
+    for user, points in top:
+        html = html + "<tr><td class='user'>%s</td> <td class='points'>%s</td></tr>" % (user, points)
+    return template('scores.tpl', top=html, number=number)
 
 def getranks():
     """Return sorted dict of users."""
-    db = {x : sum(json.loads(y)) for x, y in get_db().items()}
+    db = {x : sum(y) for x, y in get_db()['scores'].items()}
     q = lambda x: db[x[0]] # Do evil things to sort by values not keys
     return dict(sorted(db.items(), key=q))
 
@@ -44,17 +46,16 @@ class user():
     def __init__(self, name):
         self.db = get_db()
         self.name = name
-        if name in self.db:
-            self.achievements = json.loads(self.db[name])
+        if name in self.db['scores']:
+            self.achievements = self.db['scores'][name]['achievements']
         else:
-            self.db[name] = json.dumps([0])
+            self.db['scores'][name] = {'achievements': 0}
             self.achievements = 0
         self.name = name
     def achieve(self, number):
-        x = json.loads(self.db[self.name])
+        x = self.db['scores'][self.name]['achievements']
         x.append(number)
-        self.db[self.name] = json.dumps(x)
-        self.acheivements = json.loads(self.db[self.name])
+        self.achievements = self.db['scores'][name]['achievements']
 
 @route('/js/:filename')
 def js_static(filename):
