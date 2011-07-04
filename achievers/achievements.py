@@ -5,6 +5,12 @@ from urllib2 import urlopen
 
 import haikunotify
 
+achievements = [{'name': 'Failure', 'desc': 'Had a build fail'},
+{'name': 'Expansionist', 'desc': 'Installed a package'},
+{'name': 'Iron-fisted Ruler', 'desc': 'Forced a build'},
+{'name': 'Curiousity Killed The Cat', 'desc': 'Inquired about a package using -a'},
+{'name': 'Zip Trafficker', 'desc': 'Built a zip for distrobution using -d'}]
+
 def get_db(app="haikuports", name="achievements"):
     home = os.path.expanduser('~')
     directory = os.path.join(home,"config", "settings","haikuports")
