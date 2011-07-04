@@ -11,7 +11,7 @@ def get_db(app="haikuports", name="achievements"):
     return anydbm.open(os.path.join(directory, name), 'c')
 
 
-def web_acheive(username, number):
+def web_achieve(username, number):
     urlopen("http://scoreboard.haiku-os.org/%s/%s" %(username, number))
 
 

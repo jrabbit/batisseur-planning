@@ -3,13 +3,13 @@ from redish.client import Client
 import json
 
 @route('/achieve/:username/:number')
-def got_acheivement(username,number):
+def got_achievement(username,number):
     user(username).achieve(int(number))
 
 @route('/user/:username')
 def userpage(username):
     u = user(username)
-    return template("achievers.tpl", user=u.name, acheivements=maketable(user.achievements))
+    return template("achievers.tpl", user=u.name, achievements=maketable(user.achievements))
 
 
 @route('/json/:username')

@@ -16,7 +16,7 @@
 	</header>
 	<article id="user-info">
 		<h2>{{user}}</h2>
-		{{!acheivements}}
+		{{!achievements}}
 	</article>
 </body>
 </html>
