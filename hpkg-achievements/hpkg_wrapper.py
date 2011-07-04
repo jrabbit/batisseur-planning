@@ -1,6 +1,6 @@
 import sys
 from optparse import OptionParser
-from subprocess import PIPE, Popen, call
+from subprocess import PIPE, Popen
 
 def handle_new():
     pass
@@ -10,6 +10,20 @@ def handle(args):
     arg_list = ['force', 'install', 'get', 'tree', 'lint', 'search', 'yes', 'archive', 'about', 'list', 'patch', 'build', 'clean', 'test', 'distro']
     arg_dict = dict((opt, getattr(args, str(opt))) for opt in arg_list)
     # achieve(arg_dict)
+
+def endofrun(process):
+    n, k  = itertools.tee(process.stdout)
+    for l in n:
+        print l
+    v, d = itertools.tee(process.stderr)
+    for i in v:
+        print i
+    exit(k, d, process.returncode)
+    
+
+def exit(stdout, stderr, exitcode):
+    # TODO: Achieve failure from exiting.
+    print stdout, stderr, exitcode
 
 if __name__ == '__main__':
     # taken from haikuporter
@@ -56,4 +70,4 @@ if __name__ == '__main__':
     parser.add_option('--lint', action='store_true', dest='lint',
                       default=False, help="scan the ports tree for problems")
     handle(parser.parse_args()[0])
-    Popen(['haikuporter'] + sys.argv[1:], stdout=PIPE).communicate()
+    endofrun(Popen(['haikuporter'] + sys.argv[1:], stdout=PIPE, stderr=PIPE))
