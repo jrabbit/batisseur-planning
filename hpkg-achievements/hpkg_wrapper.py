@@ -12,6 +12,7 @@ def handle(args):
     # achieve(arg_dict)
 
 def endofrun(process):
+    # If this doesn't work tee into a temp file and read it for data.
     n, k  = itertools.tee(process.stdout)
     for l in n:
         print l
