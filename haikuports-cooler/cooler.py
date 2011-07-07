@@ -68,8 +68,8 @@ def checksum(uri):
 def make_bep(name, category, version, uri):
     cat_loc = os.path.join(hp_tree, category, name)
     os.mkdir(cat_loc)
-    bep_location = os.path.join(cat_loc, name+'-'+version+'.bep'
-    bep = open(bep_location), w)
+    bep_location = os.path.join(cat_loc, name+'-'+version+'.bep')
+    bep = open(bep_location, w)
     skeleton = """DESCRIPTION="Feed me Seymour!" 
     HOMEPAGE="" 
     SRC_URI="%(uri)s"
