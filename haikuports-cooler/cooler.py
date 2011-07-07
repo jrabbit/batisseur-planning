@@ -8,7 +8,7 @@ from subprocess import PIPE, Popen, call
 def parse_uri(uri):
     "take a uri and give file"
     parsed = urlparse.urlparse(uri)
-    return os.path(parsed.path)[-1]
+    return os.path.split(parsed.path)[-1]
 
 def parse_rev(f):
     "We're going to assume we can parse it, if we fail we ask the user."
@@ -19,21 +19,21 @@ def parse_rev(f):
             else:
                 return False
         return True
-    try:
-        pkg_name = f.split('-')[0]
-        if '.tar.gz' in f:
-            version = f.split('.tar.gz')[0].split('-')[1]
-        elif '.xz' in f:
-            version = f.split('.xz')[0].split('-')[1]
-        elif '.tar.bz2' in f:
-            version = f.split('.tar.bz2')[0].split('-')[1]
-        else:
-            raise NameError
-        if not is_version(version):
-            raise ValueError
-    except (NameError, ValueError) as e:
-        # Mention VCS urls.
-        pass
+
+    pkg_name = f.split('-')[0]
+    if '.tar.gz' in f:
+        name, version = f.split('.tar.gz')[0].split('-')
+    elif '.xz' in f:
+        name, version = f.split('.xz')[0].split('-')[1]
+    elif '.tar.bz2' in f:
+        name, version = f.split('.tar.bz2')[0].split('-')[1]
+    else:
+        raise NameError
+    if not is_version(version):
+        raise ValueError
+    else:
+        return name, version
+
 
 def what_category():
     "Where shall we place this lovely bep file?"
@@ -96,6 +96,18 @@ def make_bep(name, category, version, uri):
 
 def create(url):
     #do stuff
+    filename = parse_uri(url)
+    try:
+        name, version = parse_rev(filename)
+    except (NameError, ValueError) as e:
+            # Mention VCS urls.
+            print "Something bad happened! I was not able to parse the url you gave me."
+            print "It is possible you need to start again with haikuporter create git+http:/git/url or hg+http if you're intending to package from a VCS."
+            name = raw_input("What is the pakage's name? ")
+            version = raw_input("What version is it at? [If a vcs state the vcs name e.g.: hg, git] ")
+
+    category = what_category()
+    bep_location = make_bep(name, category, version, url)
     os.system('open ' +bep_location)
 
         
