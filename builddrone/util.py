@@ -8,8 +8,11 @@ def haikuporter_build(package):
     return Popen(['haikuporter', '-g', '-v', '-y', '-c', '-d', package], stdout=PIPE).communicate()
 
 def haikuporter_tree():
-    #requires python 2.7
-    return check_output(['haikuporter','-t'], stdout=PIPE)
+    if check_output:
+        #requires python 2.7
+        return check_output(['haikuporter','-t'], stdout=PIPE)
+    else:
+        pass
 
 def setgcc(version):
     if version != 4 or 2:
