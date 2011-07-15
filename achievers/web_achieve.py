@@ -1,6 +1,8 @@
 from bottle import route, run, static_file, debug, template, default_app, request
 from redish.client import Client
 import json
+import hashlib
+import urlparse
 
 @route('/achieve/:username/:number')
 def got_achievement(username,number):
@@ -11,6 +13,9 @@ def userpage(username):
     u = user(username)
     return template("achievers.tpl", user=u.name, achievements=maketable(user.achievements))
 
+@route('/register/:username/:email')
+def mk_user(username, email):
+    pass
 
 @route('/json/:username')
 def show_user(username):
@@ -46,8 +51,8 @@ class user():
     def __init__(self, name):
         self.db = get_db()
         self.name = name
-        if name in self.db['scores']:
-            self.achievements = self.db['scores'][name]['achievements']
+        if self.name in self.db['scores']:
+            self.achievements = self.db['scores'][self.name]['achievements']
         else:
             self.db['scores'][name] = {'achievements': 0}
             self.achievements = 0
@@ -55,8 +60,15 @@ class user():
     def achieve(self, number):
         x = self.db['scores'][self.name]['achievements']
         x.append(number)
-        self.achievements = self.db['scores'][name]['achievements']
-
+        self.achievements = self.db['scores'][self.name]['achievements']
+    def set_avatar(self, email):
+        self.db['scores'][self.name]['email'] = email
+        options = {'d': 'wavatar', 'r':'pg',}
+        hashed = hashlib.md5(email.lower()).hexdigest()
+        url = urlparse.urlunparse(('http', 'www.gravatar.com', '/avatar/%s/' % hashed, None, urllib.urlencode(options), None))
+        self.db['scores'][self.name]['avatar'] = url
+    def get_avatar(self):
+        return self.db['scores'][self.name]['avatar']
 @route('/js/:filename')
 def js_static(filename):
     return static_file(filename, root='./js')
