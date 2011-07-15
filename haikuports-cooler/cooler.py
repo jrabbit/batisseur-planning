@@ -93,7 +93,12 @@ def make_bep(name, category, version, uri):
     bep.write(skeleton)
     bep.close()
     return bep_location
-
+def cat_error():
+    "http://c2.com/cgi/wiki?AsciiKitten"
+    return """  |\      _,,,---,,_
+  /,`.-'`'    -.  ;-;;,_
+ |,4-  ) )-,_..;\ (  `'-'
+'---''(_/--'  `-'\_)    """
 def create(url):
     #do stuff
     filename = parse_uri(url)
@@ -101,6 +106,7 @@ def create(url):
         name, version = parse_rev(filename)
     except (NameError, ValueError) as e:
             # Mention VCS urls.
+            print cat_error()
             print "Something bad happened! I was not able to parse the url you gave me."
             print "It is possible you need to start again with haikuporter create git+http:/git/url or hg+http if you're intending to package from a VCS."
             name = raw_input("What is the pakage's name? ")
