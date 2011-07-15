@@ -23,7 +23,7 @@ def availible_jobs(name="All"):
         q['meta-name'] = name
         return q
     else:
-        
+        pass
 
 @route('/pkg/:name')
 def named_pkg(name):
