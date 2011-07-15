@@ -13,9 +13,11 @@
 	</head>
 <body>
 	<header>
+		<h1>HaikuPoints for {{user}}</h1>
 	</header>
 	<article id="user-info">
 		<h2>{{user}}</h2>
+		
 		{{!achievements}}
 	</article>
 </body>

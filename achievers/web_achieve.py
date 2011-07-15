@@ -47,7 +47,7 @@ def favicon():
     return css_static(favicon.png)
 
 class user():
-    # Todo use real framework for registration? Or allow users to set a gravatar.
+    #use real framework for registration? NO USER CONTENT EVER. Or allow users to set a gravatar.
     def __init__(self, name):
         self.db = get_db()
         self.name = name
@@ -63,8 +63,9 @@ class user():
         self.achievements = self.db['scores'][self.name]['achievements']
     def set_avatar(self, email):
         self.db['scores'][self.name]['email'] = email
-        options = {'d': 'wavatar', 'r':'pg',}
+        options = {'d': 'wavatar', 'r':'pg'} #Default size is 80x80
         hashed = hashlib.md5(email.lower()).hexdigest()
+        #urlunparse takes a 5-tuple
         url = urlparse.urlunparse(('http', 'www.gravatar.com', '/avatar/%s/' % hashed, None, urllib.urlencode(options), None))
         self.db['scores'][self.name]['avatar'] = url
     def get_avatar(self):
@@ -82,4 +83,4 @@ if __name__ == '__main__':
     def debug_db():
         return dict(get_db())
     debug(True)
-    run(host='localhost', port=8080, reloader=True)
+    run(host='localhost', port=8090, reloader=True)
