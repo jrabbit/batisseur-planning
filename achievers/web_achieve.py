@@ -1,8 +1,10 @@
-from bottle import route, run, static_file, debug, template, default_app, request
+from bottle import error, route, run, static_file, debug, template, default_app, request
 from redish.client import Client
 import json
 import hashlib
 import urlparse
+import os
+import random
 
 @route('/achieve/:username/:number')
 def got_achievement(username,number):
@@ -41,6 +43,11 @@ def getranks():
     q = lambda x: db[x[0]] # Do evil things to sort by values not keys
     return dict(sorted(db.items(), key=q))
 
+@error(404)
+def error404(e):
+    img = random.choice([x for x in os.listdir('css/neko100') if x[0] != '.']) 
+    # I have a .DS_Store from OSX might have other weird stuff on other platforms
+    return "<!DOCTYPE html><html><head><title>Error 404: Cat Found</title></head><body style='text-align:center;'><img src='/css/neko100/%s'><p><a href='http://www.cavestory.org/othergames_neko100.php'>src</a></p></body></html>" % img
 
 @route("/favicon.ico")
 def favicon():

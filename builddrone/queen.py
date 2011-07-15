@@ -2,8 +2,10 @@
 # Upload to Camlistore with git info, this allows users to vouch for it.
 import time
 import json
+import os
+import random
 from redish.client import Client
-from bottle import route, run, static_file, debug, template, default_app, request, post
+from bottle import error, route, run, static_file, debug, template, default_app, request, post
 # import camli.op
 # TODO: How to share blob refs sanely? [Simple http/json]
 # def upload_files(op, path_list):
@@ -45,6 +47,11 @@ def new_commit(name, payload):
         #Tuple of time of commit and commit ID.
         db[name]['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
 
+@error(404)
+def error404(e):
+    img = random.choice([x for x in os.listdir('css/neko100') if x[0] != '.']) 
+    # I have a .DS_Store from OSX might have other weird stuff on other platforms
+    return "<!DOCTYPE html><html><head><title>Error 404: Cat Found</title></head><body style='text-align:center;'><img src='/css/neko100/%s'><p><a href='http://www.cavestory.org/othergames_neko100.php'>src</a></p></body></html>" % img
 def get_db():
     return Client()
 
