@@ -3,6 +3,8 @@ import json
 import sys
 import time
 
+import camli.op
+
 import jenkins
 import util
 from daemon import Daemon
@@ -16,8 +18,13 @@ class leng_tche(Daemon):
                 data = json.loads(u)
                 self.lastrun = time.time()
                 if data['vcs'] == "haikuports":
-                    report_build(do_haikuport(data['meta-name']))      
-                
+                    self.package_id = 
+                    build_info = do_haikuport(data['meta-name'])
+                    #Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
+                    for l in build_info[0][1].splitlines()[-2:]:
+                        if l[-4:] == '.zip':
+                            store_zip(l.split()[-1], build_info[1], data['job-id'])
+                    report_build(build_info) #Send to jenkins.
                 self.notbuilding = True
             else:
                 pass
@@ -35,12 +42,21 @@ class leng_tche(Daemon):
             log = build_data[0]
         result = jenkins.runResult(log, "Success?", duration)
         result.send("192.168.1.45", name)
-        
+    
     def do_we_want(self, job):
         """This will allow users to not compile some dev's packages
         i.e. Mr. rm -rf"""
         return True
-
+        
+    def store_zip(self, zip_loc, name):
+        op = camli.op.CamliOp("192.168.1.45", 'pass3179')
+        blobref = op.put_blobs(file(zip_loc))
+        tell_queen(blobref, name)
+        
+    def tell_queen(self, blobref, name, job-id):
+        urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
+        % {'server': "192.168.1.45", 'job_id': job_id, 'blobref': blobref}) #TODO remove ip
+        
 if __name__ == '__main__':
     ourdaemon = leng_tche('/boot/home/config/settings/Builddrone_pid')
     if sys.argv[1] == "-d":
