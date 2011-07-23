@@ -4,6 +4,8 @@ import time
 import json
 import os
 import random
+import uuid
+
 from redish.client import Client
 from bottle import error, route, run, static_file, debug, template, default_app, request, post
 
@@ -36,6 +38,19 @@ def new_commit(name, payload):
         db[name]['revs'][branch]['last-commit'] = (time.time(), payload['commits'][0]['id'])
         #Tuple of time of commit and commit ID.
         db[name]['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
+
+def mk_id(name, arch, gcc, length):
+    u = uuid.uuid4().hex[:length] #This reduces the uniqueness but makes better urls
+    jobid = name +'-'+ arch +'-'+ gcc +'-'+ u
+    return jobid
+
+@route("/completed/:job_id/:blobref")
+def recieve_blob(job_id, blobref):
+    get_db()['jobs'][job_id] = {'status': 'completed', 'blob': blobref}
+
+@route("/blob/:job_id")
+def give_blob(job_id):
+    return get_db()['jobs'][job_id]['blob']
 
 @error(404)
 def error404(e):
