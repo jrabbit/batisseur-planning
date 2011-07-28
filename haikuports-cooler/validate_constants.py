@@ -1,3 +1,6 @@
+class shell(list):
+    pass
+
 ShellType = shell
 
 class status(str):
