@@ -14,11 +14,19 @@ def availible_jobs(name="All"):
     db = get_db()
     if name is not "All":
         q = dict(db[name]) #force json?
+        arch = request.GET.get('arch') #?arch=i368&gcc=gcc4
+        gcc = request.GET.get('gcc')
+        if not arch:
+            arch = 'i368'
+        if not gcc:
+            gcc = 'gcc4'
         q['meta-name'] = name
+        q['jobid'] = mk_id(name, arch, gcc, 6) 
         return q
     else:
-        pass
+        return db
 
+# @route('/get_job')
 @route('/pkg/:name')
 def named_pkg(name):
     return availible_jobs(name=name)        
@@ -39,7 +47,7 @@ def new_commit(name, payload):
         #Tuple of time of commit and commit ID.
         db[name]['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
 
-def mk_id(name, arch, gcc, length):
+def mk_id(name, arch, gcc, length=6):
     u = uuid.uuid4().hex[:length] #This reduces the uniqueness but makes better urls
     jobid = name +'-'+ arch +'-'+ gcc +'-'+ u
     return jobid
@@ -57,6 +65,11 @@ def error404(e):
     img = random.choice([x for x in os.listdir('css/neko100') if x[0] != '.']) 
     # I have a .DS_Store from OSX might have other weird stuff on other platforms
     return "<!DOCTYPE html><html><head><title>Error 404: Cat Found</title></head><body style='text-align:center;'><img src='/css/neko100/%s'><p><a href='http://www.cavestory.org/othergames_neko100.php'>src</a></p></body></html>" % img
+@route('/css/:filename#.+#')
+def css_static(filename):
+    return static_file(filename, root='./css')
+    
+
 def get_db():
     return Client()
 
@@ -95,4 +108,5 @@ class Job(object):
     
 
 if __name__ == '__main__':
+    debug=True
     run(host='192.168.1.45', port=8080, reloader=True)

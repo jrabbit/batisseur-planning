@@ -13,12 +13,12 @@ class leng_tche(Daemon):
     def run(self):
         while 1:
             #Query the builddrone queen.
-            if time.time() - self.lastrun > 60*5 and self.notbuilding
+            if time.time() - self.lastrun > 60*5 and self.notbuilding:
                 u = urllib.urlopen("http://%s/jobs" % "192.168.1.45") #TODO remove ip
                 data = json.loads(u)
                 self.lastrun = time.time()
                 if data['vcs'] == "haikuports":
-                    self.package_id = 
+                    self.package_id = data['jobid']
                     build_info = do_haikuport(data['meta-name'])
                     #Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
                     for l in build_info[0][1].splitlines()[-2:]:
@@ -53,7 +53,7 @@ class leng_tche(Daemon):
         blobref = op.put_blobs(file(zip_loc))
         tell_queen(blobref, name)
         
-    def tell_queen(self, blobref, name, job-id):
+    def tell_queen(self, blobref, name, job_id):
         urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
         % {'server': "192.168.1.45", 'job_id': job_id, 'blobref': blobref}) #TODO remove ip
         
