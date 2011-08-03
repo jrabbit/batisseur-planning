@@ -4,8 +4,11 @@ if platform.python_version_tuple()[:2] == ('2', '6'):
 else:
     from subprocess import PIPE, Popen, check_output, call
     
-def haikuporter_build(package):
-    return Popen(['haikuporter', '-y', '-c', '-d', package], stdout=PIPE).communicate()
+def haikuporter_build(package, clean=False):
+    if clean:
+        return Popen(['haikuporter', '-y', '-c', '-d', package], stdout=PIPE).communicate()
+    else:
+        return Popen(['haikuporter', '-y', '-d', package], stdout=PIPE).communicate()
 
 def haikuporter_tree():
     if check_output:
