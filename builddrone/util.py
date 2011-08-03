@@ -1,4 +1,7 @@
 import platform
+import json
+import os
+
 if platform.python_version_tuple()[:2] == ('2', '6'):
     from subprocess import PIPE, Popen, call
 else:
@@ -22,3 +25,8 @@ def setgcc(version):
         raise ValueError
     else:
         call(['setgcc' 'gcc%s' % str(version)])
+def conf():
+    "Return configuration dict for the builddrone client (leng tche)"
+    home = os.path.expanduser('~')
+    options = open("%s/config/settings/build_drone/options.json" % home)
+    return json.load(options)

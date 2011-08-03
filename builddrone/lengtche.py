@@ -2,6 +2,8 @@ import urllib
 import json
 import sys
 import time
+import os
+import ftplib
 
 import camli.op
 
@@ -52,6 +54,14 @@ class leng_tche(Daemon):
         op = camli.op.CamliOp("192.168.1.45", 'pass3179')
         blobref = op.put_blobs(file(zip_loc))
         tell_queen(blobref, name, job_id)
+    def store_ftp(self, zip_loc, name, job_id):
+        "optional fall back if camlistore doesn't pan out"
+        conf = util.conf()['ftp']
+        f = ftplib.FTP_TLS(conf['ftp_host']) #We don't actually want to upload here
+        f.login() #Anonymous login
+        f.prot_p() #secure the line
+        f.cwd(os.path.join(conf['remotepath', name))
+        f.storbinary("STOR %s" % os.path.split(zip_loc)[1], file(zip_loc))
         
     def tell_queen(self, blobref, name, job_id):
         urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
