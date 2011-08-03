@@ -48,10 +48,10 @@ class leng_tche(Daemon):
         i.e. Mr. rm -rf"""
         return True
         
-    def store_zip(self, zip_loc, name):
+    def store_zip(self, zip_loc, name, job_id):
         op = camli.op.CamliOp("192.168.1.45", 'pass3179')
         blobref = op.put_blobs(file(zip_loc))
-        tell_queen(blobref, name)
+        tell_queen(blobref, name, job_id)
         
     def tell_queen(self, blobref, name, job_id):
         urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
