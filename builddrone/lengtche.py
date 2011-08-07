@@ -22,7 +22,7 @@ class leng_tche(Daemon):
                 if data['vcs'] == "haikuports":
                     self.package_id = data['jobid']
                     build_info = do_haikuport(data['meta-name'])
-                    #Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
+#Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
                     for l in build_info[0][0].splitlines()[-2:]:
                         if l[-4:] == '.zip':
                             store_zip(l.split()[-1], build_info[1], data['job-id'])
@@ -51,8 +51,10 @@ class leng_tche(Daemon):
         return True
         
     def store_zip(self, zip_loc, name, job_id):
-        op = camli.op.CamliOp("192.168.1.45", 'pass3179')
-        blobref = op.put_blobs(file(zip_loc))
+        conf = util.conf()['camli']
+        
+        op = camli.op.CamliOp("192.168.1.45", auth='username:pass3179', basepath='/bs')
+        blobref = op.put_blobs([open(zip_loc)]) #list does matter
         tell_queen(blobref, name, job_id)
     def store_ftp(self, zip_loc, name, job_id):
         "optional fall back if camlistore doesn't pan out"
@@ -61,14 +63,14 @@ class leng_tche(Daemon):
         f.login() #Anonymous login
         f.prot_p() #secure the line
         f.cwd(os.path.join(conf['remotepath', name))
-        f.storbinary("STOR %s" % os.path.split(zip_loc)[1], file(zip_loc))
+        f.storbinary("STOR %s" % os.path.split(zip_loc)[1], open(zip_loc))
         
     def tell_queen(self, blobref, name, job_id):
         urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
         % {'server': "192.168.1.45", 'job_id': job_id, 'blobref': blobref}) #TODO remove ip
         
 if __name__ == '__main__':
-    ourdaemon = leng_tche('/boot/home/config/settings/Builddrone_pid')
+    ourdaemon = leng_tche('/boot/home/config/settings/build_drone/Builddrone_pid')
     if sys.argv[1] == "-d":
         ourdaemon.start()
     elif sys.argv[1] == "-s":
