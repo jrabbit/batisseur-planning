@@ -9,6 +9,8 @@ import uuid
 from redish.client import Client
 from bottle import error, route, run, static_file, debug, template, default_app, request, post
 
+import hooks
+
 @route('/jobs')
 def availible_jobs(name="All"):
     db = get_db()
@@ -32,20 +34,28 @@ def named_pkg(name):
     return availible_jobs(name=name)        
 
 @post('/commit/:pkg')
+@post('/commit_github/:pkg')
 def github_hook(pkg):
     payload = request.forms.get('payload')
     d = json.loads(payload)
-    new_commit(d['repository']['name'], d)
+    new_commit(pkg, hooks.Github_Commit(d))
 
-def new_commit(name, payload):
+@post('/commit_bitbucket/:pkg')
+def bitbucket_hook(pkg):
+    payload = request.forms.get('payload')
+    d = json.loads(payload)
+    new_commit(pkg, hooks.BB_Commit(d))
+
+def new_commit(name, commits):
     db = get_db()
     if name not in db.keys():
         pass
     else:
-        branch = payload['ref'][11:]
-        db[name]['revs'][branch]['last-commit'] = (time.time(), payload['commits'][0]['id'])
-        #Tuple of time of commit and commit ID.
-        db[name]['revs'][branch][payload['commits'][0]['id']] = {'Builds': 0} # Never been built.
+        #Tuple (branch , (commit-sha, unix_time))
+        for commit in commits.commits: 
+            #Tuple of time of commit and commit ID.
+            db[name]['revs'][commit[0]]['last-commit'] = (commit[1][1], commit[1][0])
+            db[name]['revs'][commit[0]][commit[1][0]] = {'Builds': 0}
 
 def mk_id(name, arch, gcc, length=6):
     u = uuid.uuid4().hex[:length] #This reduces the uniqueness but makes better urls
