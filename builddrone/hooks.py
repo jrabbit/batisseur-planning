@@ -9,7 +9,7 @@ class BB_Commit():
         self.url = p['canon_url'] + p['repository']['absolute_url']
         self.name = p['repository']['name']
         #Commit id(s), (branch , (commit-sha, unix_time))
-        self.commits = [( x['branch'] ,(x['node'], time.mktime(time.strptime(x['timestamp'], "%Y-%m-%d %H:%M:%S")))) for x in p['commits'] ]    
+        self.commits = [( x['branch'] ,(x['node'], time.mktime(time.strptime(x['timestamp'], "%Y-%m-%d %H:%M:%S")))) for x in p['commits']]    
     
     def is_single_commit(self):
         "Does commits contain only one element. API consumers can simplify code then."
@@ -27,6 +27,12 @@ class Github_Commit():
         self.name = p['repository']['name']
         #Commit ids (branch, (commit-sha, unix_time))
         self.commits = [((p['ref'][11:]), (x['id'], time.mktime(iso8601.parse_date(x['timestamp']).timetuple()))) for x in p['commits']]
+    def is_single_commit(self):
+        "This may the the only similar thing between these hooks."
+        if len(self.payload['commits']) == 1:
+            return True 
+        else:
+            return False
     
 
         

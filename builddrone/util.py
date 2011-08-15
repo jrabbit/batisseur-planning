@@ -1,6 +1,12 @@
 import platform
+import tempfile
 import json
 import os
+
+try:
+    import gnupg
+except ImportError:
+    pass
 
 if platform.python_version_tuple()[:2] == ('2', '6'):
     from subprocess import PIPE, Popen, call
@@ -25,6 +31,27 @@ def setgcc(version):
         raise ValueError
     else:
         call(['setgcc' 'gcc%s' % str(version)])
+
+def sign_json(jsono):
+    json_object = json.dumps(jsono)
+    if json_object[-1] == '}':
+        trimmed = json_object.strip()[:-1]
+    else:
+        raise ValueError
+    # trim_file = open(tempfile.mkstemp()[1], 'wb')
+    # trim_file.write(trimmed)
+    # trim_file.name
+    #gpg --detach-sign --local-user=54F8A914 --armor -o  signing-before.camli (trimmed)
+    if not gnupg:
+        pass
+    else:
+        gpg = gnupg.GPG()
+        # Todo: use specific keys
+        signature = gpg.sign(trimmed, detach=True)
+        thegoodparts = ''.join(signature.data.splitlines()[3:-1])
+        signed_json = trimmed + ',"camliSig":"%s"}\n' % thegoodparts
+        return signed_json #this is a string.
+
 def conf():
     "Return configuration dict for the builddrone client (leng tche)"
     home = os.path.expanduser('~')
