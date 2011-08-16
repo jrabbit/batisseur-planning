@@ -1,3 +1,7 @@
+Camlistore
+==========
+Camlistore's Go version will only run where [Go](http://golang.org/) does, keep that in mind. There is a python implementation for Google App Engine but it is not recommended and untested. Follow Go's install instructions or get it from your OS's package-manager, then with the right environment variables ($GOROOT etc), `./build.pl allfast`. (This means you need perl, but you should already have that.) Camlistore can be deployed on the Google App Engine in its Go version. It also can be configured more specifically than the dev-* scripts that are provided to make working with camlistore simpler. Of the scripts you want `./dev-blobserver`. This is the data back-end for the whole operation, please note that the development version stores its data on the harddrive in /tmp, you probably don't want this if you're deploying it, check out it's configuration options and the mysql backend.
+
 Client
 ======
 
@@ -5,10 +9,10 @@ Client
 
 `pip install camlistore-client`
 
-TODO: make skeleton config for client.
+Edit and copy conf.example.json into ~/config/settings/build_drone/options.json
+Queen refers to the controller, the ftp stuff isn't really useful to most people. (Might upgrade to SFTP rather than FTP/SSL later if anyone uses that.) The camlistore information is the default from running `./dev-blobserver` (except my IP).
 
 Controller
 ==========
 You need [redis](http://redis.io/) installed. Then `pip install redish bottle`.
-The controller can be run anywhere, use it where you easily have access to redis. 
-
+The controller can be run anywhere, use it where you easily have access to redis.
