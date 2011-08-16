@@ -1,0 +1,12 @@
+About Build Drone
+==================
+
+The first thing to know about build drone is the problem-space we're dealing with. [Debian](http://en.wikipedia.org/wiki/File:Debian-package-cycl.svg) is an example. Haiku has 3 existing tools in the package realm, haikuports (the source format like a Debian/control file), packageman (the package manager, installs packages and forms them), and installoptionalpackage which will be phased out. Packageman's new packages will be archives mounted to the filesystem. (You can read about it [here](http://dev.haiku-os.org/wiki/PackageManagement).)
+
+So a package starts out as a haikuports bep file, haikuports knows how to build this on haiku and what it needs to build it. When packageman is brought in it will tell packageman to mount the dependencies into the chroot it will build in. (This is a TODO on haikuporter's side, I will probably get involved with that.)
+
+The client requests the changesets that have been pushed to the controller ([queen.py](https://github.com/jrabbit/batisseur-planning/blob/master/builddrone/queen.py)) and picks one that hasn't been built or that the user wants. (These settings can be hacked by anyone who wants to, the client calls a function that you can have do something.) The client then pulls the repository (TODO) that the package is from and runs haikuporter on it.
+
+The client now has a zip file of the compiled software. It forms a unique id for this build and reports its status and log(s) optionally to [Jenkins](http://jenkins-ci.org/). It uploads the zip to a [camlistore](http://camlistore.org/) or FTPS instance, returning a sha1-sum or ftp/http url. It uploads that sha-sum to the controller with the build-ID associated with the changeset. The controller can give a user the sha-sum now when requested. Optionally the client may sign the package with GnuPG. This isn't well supported by camlistore from what I understand yet.
+
+Developers populate the controller's changesets with a Github, Bitbucket, or manual service hook (The latter will be necessary for Haikuporter to use this as it uses svn.). 
