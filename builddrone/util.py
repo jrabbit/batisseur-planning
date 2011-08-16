@@ -35,7 +35,7 @@ def setgcc(version):
 def sign_json(jsono):
     json_object = json.dumps(jsono)
     if json_object[-1] == '}':
-        trimmed = json_object.strip()[:-1]
+        trimmed = json_object.rstrip()[:-1]
     else:
         raise ValueError
     # trim_file = open(tempfile.mkstemp()[1], 'wb')
@@ -51,7 +51,13 @@ def sign_json(jsono):
         thegoodparts = ''.join(signature.data.splitlines()[3:-1])
         signed_json = trimmed + ',"camliSig":"%s"}\n' % thegoodparts
         return signed_json #this is a string.
-
+def verify_json(jsonstr):
+    payload, sep, signature = jsonstr.partition(',"camliSig":"')
+    #make the payload real json.
+    payload = payload + "}"
+    sign_block = json.loads('{' + sep[1:] + signature) #reconstruct json.
+    sign = sign_block['camliSig']
+    #todo finish verification after seeing actual share blobs.
 def conf():
     "Return configuration dict for the builddrone client (leng tche)"
     home = os.path.expanduser('~')
