@@ -16,7 +16,7 @@ class leng_tche(Daemon):
         while 1:
             #Query the builddrone queen.
             if time.time() - self.lastrun > 60*5 and self.notbuilding:
-                u = urllib.urlopen("http://%s/jobs" % "192.168.1.45") #TODO remove ip
+                u = urllib.urlopen("http://%s/jobs" % util.conf()['queen']['url'])
                 data = json.loads(u)
                 self.lastrun = time.time()
                 if data['vcs'] == "haikuports":
@@ -43,7 +43,7 @@ class leng_tche(Daemon):
         else:
             log = build_data[0]
         result = jenkins.runResult(log, "Success?", duration)
-        result.send("192.168.1.45", name)
+        result.send(util.conf()['jenkins']['url'], name)
     
     def do_we_want(self, job):
         """This will allow users to not compile some dev's packages
@@ -52,8 +52,7 @@ class leng_tche(Daemon):
         
     def store_zip(self, zip_loc, name, job_id):
         conf = util.conf()['camli']
-        
-        op = camli.op.CamliOp("192.168.1.45", auth='username:pass3179', basepath='/bs')
+        op = camli.op.CamliOp(conf['url'], auth=conf['auth'], basepath=conf['basepath'])
         blobref = op.put_blobs([open(zip_loc)]) #list does matter
         tell_queen(blobref, name, job_id)
     def store_ftp(self, zip_loc, name, job_id):
@@ -67,7 +66,7 @@ class leng_tche(Daemon):
         
     def tell_queen(self, blobref, name, job_id):
         urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
-        % {'server': "192.168.1.45", 'job_id': job_id, 'blobref': blobref}) #TODO remove ip
+        % {'server': util.conf()['queen']['url'], 'job_id': job_id, 'blobref': blobref})
         
 if __name__ == '__main__':
     ourdaemon = leng_tche('/boot/home/config/settings/build_drone/Builddrone_pid')

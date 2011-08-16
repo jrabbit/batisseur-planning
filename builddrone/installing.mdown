@@ -1,0 +1,14 @@
+Client
+======
+
+`easy_install pip`
+
+`pip install camlistore-client`
+
+TODO: make skeleton config for client.
+
+Controller
+==========
+You need [redis](http://redis.io/) installed. Then `pip install redish bottle`.
+The controller can be run anywhere, use it where you easily have access to redis. 
+
