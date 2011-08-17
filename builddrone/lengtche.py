@@ -56,7 +56,11 @@ class leng_tche(Daemon):
         conf = util.conf()['camli']
         op = camli.op.CamliOp(conf['url'], auth=conf['auth'], basepath=conf['basepath'])
         blobref = op.put_blobs([open(zip_loc)]) #list does matter
-        self.tell_queen(blobref, name, job_id)
+        if len(blobref) == 1:
+            blobref_clean = blobref.pop()
+        else:
+            raise ValueError("Multiple blobrefs!")
+        self.tell_queen(blobref_clean, name, job_id)
     
     def store_ftp(self, zip_loc, name, job_id):
         "optional fall back if camlistore doesn't pan out"
