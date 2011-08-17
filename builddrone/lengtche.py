@@ -18,7 +18,8 @@ class leng_tche(Daemon):
         while 1:
             #Query the builddrone queen.
             if time.time() - self.lastrun > 60*5 and self.notbuilding:
-                u = urllib.urlopen("http://%s/jobs" % util.conf()['queen']['url'])
+                u = urllib.urlopen("http://%s/jobs" % util.conf()['queen']['url']) #TODO: ask for GCC/arch jobid
+                #TODO care about user prefrence on arch
                 data = json.loads(u)
                 self.lastrun = time.time()
                 if data['vcs'] == "haikuports":
@@ -27,7 +28,7 @@ class leng_tche(Daemon):
 #Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
                     for l in build_info[0][0].splitlines()[-2:]:
                         if l[-4:] == '.zip':
-                            self.store_zip(l.split()[-1], build_info[1], data['job-id'])
+                            self.store_zip(l.split()[-1], build_info[1], data['jobid'])
                     self.report_build(build_info) #Send to jenkins.
                 self.notbuilding = True
             else:
