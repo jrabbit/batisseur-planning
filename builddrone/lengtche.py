@@ -27,8 +27,8 @@ class leng_tche(Daemon):
 #Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
                     for l in build_info[0][0].splitlines()[-2:]:
                         if l[-4:] == '.zip':
-                            store_zip(l.split()[-1], build_info[1], data['job-id'])
-                    report_build(build_info) #Send to jenkins.
+                            self.store_zip(l.split()[-1], build_info[1], data['job-id'])
+                    self.report_build(build_info) #Send to jenkins.
                 self.notbuilding = True
             else:
                 pass
@@ -56,7 +56,8 @@ class leng_tche(Daemon):
         conf = util.conf()['camli']
         op = camli.op.CamliOp(conf['url'], auth=conf['auth'], basepath=conf['basepath'])
         blobref = op.put_blobs([open(zip_loc)]) #list does matter
-        tell_queen(blobref, name, job_id)
+        self.tell_queen(blobref, name, job_id)
+    
     def store_ftp(self, zip_loc, name, job_id):
         "optional fall back if camlistore doesn't pan out"
         conf = util.conf()['ftp']

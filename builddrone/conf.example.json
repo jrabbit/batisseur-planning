@@ -3,5 +3,5 @@
 "queen": 
     {"url": "192.168.1.45"}, 
 "camli": 
-    {"url": "192.168.1.45", "basepath": "/bs", "auth": "username:pass3179"}
+    {"url": "192.168.1.45:3179", "basepath": "/bs", "auth": "username:pass3179"}
 }
