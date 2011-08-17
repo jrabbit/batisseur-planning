@@ -15,7 +15,9 @@ chmod 755 installhaikuporter.sh
 Client
 ======
 
-`easy_install pip` This is provided by python.
+`haikuporter -i setuptools` Haiku's python doesn't come with `easy_install`.
+
+`easy_install pip`
 
 `pip install camlistore-client`
 
