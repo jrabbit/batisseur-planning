@@ -13,6 +13,8 @@ from daemon import Daemon
 
 class leng_tche(Daemon):
     def run(self):
+        self.lastrun = 0
+        self.notbuilding = True
         while 1:
             #Query the builddrone queen.
             if time.time() - self.lastrun > 60*5 and self.notbuilding:
@@ -61,7 +63,7 @@ class leng_tche(Daemon):
         f = ftplib.FTP_TLS(conf['ftp_host']) #We don't actually want to upload here
         f.login() #Anonymous login
         f.prot_p() #secure the line
-        f.cwd(os.path.join(conf['remotepath', name))
+        f.cwd(os.path.join(conf['remotepath'], name))
         f.storbinary("STOR %s" % os.path.split(zip_loc)[1], open(zip_loc))
         
     def tell_queen(self, blobref, name, job_id):
@@ -70,9 +72,10 @@ class leng_tche(Daemon):
         
 if __name__ == '__main__':
     ourdaemon = leng_tche('/boot/home/config/settings/build_drone/Builddrone_pid')
-    if sys.argv[1] == "-d":
-        ourdaemon.start()
-    elif sys.argv[1] == "-s":
-        ourdaemon.stop()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-d":
+            ourdaemon.start()
+        elif sys.argv[1] == "-s":
+            ourdaemon.stop()
     else:
         ourdaemon.run()
