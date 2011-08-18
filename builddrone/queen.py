@@ -5,8 +5,9 @@ import json
 import os
 import random
 import uuid
+import atexit
+import cPickle
 
-from redish.client import Client
 from bottle import error, route, run, static_file, debug, template, default_app, request, post
 
 import hooks
