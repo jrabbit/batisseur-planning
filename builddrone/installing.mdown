@@ -24,7 +24,3 @@ Client
 Edit and copy conf.example.json into ~/config/settings/build_drone/options.json
 Queen refers to the controller, the ftp stuff isn't really useful to most people. (Might upgrade to SFTP rather than FTP/SSL later if anyone uses that.) The camlistore information is the default from running `./dev-blobserver` (except my IP).
 
-Controller
-==========
-You need [redis](http://redis.io/) installed. Then `pip install redish bottle`.
-The controller can be run anywhere, use it where you easily have access to redis.
