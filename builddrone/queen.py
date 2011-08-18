@@ -124,7 +124,10 @@ class Job(object):
 
 if __name__ == '__main__':
     debug(True)
-    our_file = open('data.pkl', 'wb')
-    our_db = cPickle.load(our_file)
-    atexit.register(close_pickle(our_db, our_file))
+    our_file = open('data.pkl', 'w+b')
+    try:
+        our_db = cPickle.load(our_file)
+    except EOFError:
+        our_db = {}
+    atexit.register(close_pickle, our_db, our_file)
     run(host='192.168.1.45', port=8080, reloader=True)
