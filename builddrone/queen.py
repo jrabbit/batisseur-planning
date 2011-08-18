@@ -81,7 +81,11 @@ def css_static(filename):
     
 
 def get_db():
-    return Client()
+    return our_db
+
+def close_pickle(db, f):
+    cPickle.dump(db, f)
+    f.close()
 
 class Job(object):
     def __init__(self, name, database):
@@ -118,5 +122,8 @@ class Job(object):
     
 
 if __name__ == '__main__':
-    debug=True
+    debug(True)
+    our_file = open('data.pkl', 'wb')
+    our_db = cPickle.load(our_file)
+    atexit.register(close_pickle(our_db, our_file))
     run(host='192.168.1.45', port=8080, reloader=True)
