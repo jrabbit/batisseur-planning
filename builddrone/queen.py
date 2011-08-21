@@ -51,10 +51,14 @@ def new_commit(name, commits):
     db = get_db()
     if name not in db.keys():
         pass
+    if name not in db:
+        db[name] = {}
+        db[name]['revs'] = {}
     else:
         #Tuple (branch , (commit-sha, unix_time))
         for commit in commits.commits: 
             #Tuple of time of commit and commit ID.
+            db[name]['revs'][commit[0]] = {}
             db[name]['revs'][commit[0]]['last-commit'] = (commit[1][1], commit[1][0])
             db[name]['revs'][commit[0]][commit[1][0]] = {'Builds': 0}
 
@@ -65,6 +69,8 @@ def mk_id(name, arch, gcc, length=6):
 
 @route("/completed/:job_id/:blobref")
 def recieve_blob(job_id, blobref):
+    if 'jobs' not in  get_db():
+        get_db()['jobs'] = {}
     get_db()['jobs'][job_id] = {'status': 'completed', 'blob': blobref}
 
 @route("/blob/:job_id")
