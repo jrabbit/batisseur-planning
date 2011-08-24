@@ -90,9 +90,9 @@ def css_static(filename):
 def get_db():
     return our_db
 
-def close_pickle(db, f):
-    cPickle.dump(db, f)
-    f.close()
+def close_pickle(db):
+    with open('data.pkl', 'wb') as f:
+        cPickle.dump(db, f)
 
 class Job(object):
     def __init__(self, name, database):
@@ -130,10 +130,10 @@ class Job(object):
 
 if __name__ == '__main__':
     debug(True)
-    our_file = open('data.pkl', 'w+b')
     try:
-        our_db = cPickle.load(our_file)
+        with open('data.pkl', 'rb') as our_file:
+            our_db = cPickle.load(our_file)
     except EOFError:
         our_db = {}
-    atexit.register(close_pickle, our_db, our_file)
+    atexit.register(close_pickle, our_db)
     run(host='192.168.1.45', port=8080, reloader=True)
