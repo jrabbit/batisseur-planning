@@ -1,4 +1,4 @@
-import urllib
+import urllib2
 import json
 import sys
 import time
@@ -18,14 +18,17 @@ class leng_tche(Daemon):
         while 1:
             #Query the builddrone queen.
             if time.time() - self.lastrun > 60*5 and self.notbuilding:
-                u = urllib.urlopen("http://%s/jobs" % util.conf()['queen']['url']) #TODO: ask for GCC/arch jobid
+                u = urllib2.urlopen("http://%s/jobs" \
+                % util.conf()['queen']['url']).read() 
+                #TODO: ask for GCC/arch jobid
                 #TODO care about user prefrence on arch
-                data = json.loads(u)
+                data = json.load(u)
                 self.lastrun = time.time()
-                if data['vcs'] == "haikuports":
+                if 'vcs' in data and data['vcs'] == "haikuports":
                     self.package_id = data['jobid']
                     build_info = do_haikuport(data['meta-name'])
-#Haikuports may or may not reccomend to build source archive as last line depending if GPL'd
+                    #Haikuports may or may not reccomend to build source 
+                    #archive as last line depending if GPL'd
                     for l in build_info[0][0].splitlines()[-2:]:
                         if l[-4:] == '.zip':
                             self.store_zip(l.split()[-1], build_info[1], data['jobid'])
@@ -73,7 +76,7 @@ class leng_tche(Daemon):
         f.storbinary("STOR %s" % os.path.split(zip_loc)[1], open(zip_loc))
         
     def tell_queen(self, blobref, name, job_id):
-        urllib.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
+        urllib2.urlopen("http://%(server)s/completed/%(job_id)s/%(blobref)s" \
         % {'server': util.conf()['queen']['url'], 'job_id': job_id, 'blobref': blobref})
         
 if __name__ == '__main__':
