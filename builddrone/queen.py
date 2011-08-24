@@ -50,6 +50,15 @@ def bitbucket_hook(pkg):
     d = json.loads(payload)
     new_commit(pkg, hooks.BB_Commit(d))
 
+@post('/commit_haikports')
+def haikuports_hook():
+    payload = request.forms.get('payload')
+    d = json.loads(payload)
+    h = hooks.Haikuports_Commit(d)
+    for k in h.commits:
+        dumby = Dumby_Commit( ('hp-trunk', (k['sha'], time.time()) )
+        new_commit(k['name'], dumby)
+
 def new_commit(name, commits):
     db = get_db()
     if name not in db.keys():

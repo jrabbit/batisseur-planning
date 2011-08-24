@@ -34,6 +34,21 @@ class Github_Commit():
         else:
             return False
     
+class Haikuports_Commit():
+    def __init__(self, p):
+        self.payload = p
+        self.commits = []
+        for project in p['commits']:
+            for item in p['commits'][project]:
+                commits.append({'project': project, 
+                'name': item['version'], 
+                'sha': self.fake_sha(item['version'])}
+    def fake_sha(self, name):
+        return name + self.payload['revision']
+
+class Dumby_Commit():
+    def __init__(self, commit):
+        self.commits = commit
 
         
-        
+         
