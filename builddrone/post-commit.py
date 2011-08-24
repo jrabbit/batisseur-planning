@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 from subprocess import PIPE, Popen, call
 import urllib2
