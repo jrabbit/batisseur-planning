@@ -85,7 +85,8 @@ def recieve_blob():
     info = json.loads(request.forms.get('json'))
     if 'jobs' not in  get_db():
         get_db()['jobs'] = {}
-    db['jobs'][info['job_id']] = {'status': 'completed', 'blob': info['blobref'], 'date': time.time()}
+    db['jobs'][info['job_id']] = {'status': 'completed', 
+    'blob': info['blobref'], 'date': time.time()}
     which = db[info['project']]['revs'][info['branch']][info['sha']]
     which['Builds'] += 1
     if 'Jobs' in which:
@@ -116,6 +117,7 @@ def close_pickle(db):
         cPickle.dump(db, f)
 
 class Job(object):
+    "Unused and unuseful, contains a good line for evaluating jobs of a specific project"
     def __init__(self, name, database):
         self.start =  time.localtime()
         self.name = name

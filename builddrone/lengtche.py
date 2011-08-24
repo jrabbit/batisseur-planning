@@ -21,27 +21,31 @@ class leng_tche(Daemon):
                 u = urllib2.urlopen("http://%s/jobs" \
                 % util.conf()['queen']['url']).read() 
                 #TODO: ask for GCC/arch jobid
-                #TODO care about user prefrence on arch
-                data = json.loads(u)
-                
+                #TODO care about user prefrence on arch, use platform.processor()
+                data = json.loads(u) 
                 self.lastrun = time.time()
-                if 'vcs' in data and data['vcs'] == "haikuports":
-                    self.package_id = data['jobid']
-                    build_info = do_haikuport(data['meta-name'])
-                    #Haikuports may or may not reccomend to build source 
-                    #archive as last line depending if GPL'd
-                    for l in build_info[0][0].splitlines()[-2:]:
-                        if l[-4:] == '.zip':
-                            self.store_zip(l.split()[-1], build_info[1], data['jobid'])
-                    self.report_build(build_info) #Send to jenkins.
+                self.process_jobs(data)
                 self.notbuilding = True
             else:
                 pass
+    
     def process_jobs(self, jobs):
         "Return the first job that the user wants"
-        for job in jobs:
-            if self.do_we_want(job):
-                return job            
+        for project in jobs:
+            for branch in project['revs']:
+                last = branch[branch['last-commit'][1]]
+                if last['Builds'] == 0 and self.do_we_want(job):
+                    if branch == 'hp-trunk':
+                        build_info = self.do_haikuport(project)
+                        #Haikuports may or may not reccomend to build source 
+                        #archive as last line depending if GPL'd
+                        for l in build_info[0][0].splitlines()[-2:]:
+                            if l[-4:] == '.zip':
+                                self.store_zip(l.split()[-1], 
+                                build_info[1], data['jobid'])
+                        self.report_build(build_info) #Send to jenkins.
+                        
+                        
     def do_haikuport(self, name):
         self.notbuilding = False
         popen_data = util.haikuporter_build(name)
