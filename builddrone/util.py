@@ -14,6 +14,7 @@ else:
     from subprocess import PIPE, Popen, check_output, call
     
 def haikuporter_build(package, clean=False):
+    subprocess.call(['haikuporter', '-g']) #update first
     if clean:
         return Popen(['haikuporter', '-y', '-c', '-d', package], stdout=PIPE).communicate()
     else:
