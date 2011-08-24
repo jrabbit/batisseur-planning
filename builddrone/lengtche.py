@@ -22,7 +22,8 @@ class leng_tche(Daemon):
                 % util.conf()['queen']['url']).read() 
                 #TODO: ask for GCC/arch jobid
                 #TODO care about user prefrence on arch
-                data = json.load(u)
+                data = json.loads(u)
+                
                 self.lastrun = time.time()
                 if 'vcs' in data and data['vcs'] == "haikuports":
                     self.package_id = data['jobid']
