@@ -11,7 +11,7 @@ def send_hook(payload):
     urllib2.urlopen(QUEEN_ADRESS, urllib.urlencode({'payload': json.dumps(payload)}))
 
 def main(location, revision):
-    out, err = Popen(['svn', 'log', '-v' ,'-r', revision] cwd=location, stdout=PIPE).communicate()
+    out, err = Popen(['svn', 'log', '-v' ,'-r', revision], cwd=location, stdout=PIPE).communicate()
     paths = []
     for x in out.splitlines():
         if x and x.strip()[0] in ['M', 'A']:
