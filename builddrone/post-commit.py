@@ -4,7 +4,7 @@ import urllib2
 import urllib
 import json
 
-QUEEN_ADRESS = "http://192.168.1.45:8080/"
+QUEEN_ADRESS = "http://192.168.1.45:8080/commit_haikuports"
 
 def send_hook(payload):
     urllib2.urlopen(QUEEN_ADRESS, urllib.urlencode({'payload': json.dumps(payload)}))
@@ -16,7 +16,7 @@ def main(location, revision):
         if x and x.strip()[0] in ['M', 'A']:
             paths.append(x.strip())
     beps = [x for x in paths if x.split('.')[-1] == 'bep']
-    payload = {'commits':{}}
+    payload = {'commits':{}, 'revision': revision}
     for bep in beps:
         branch = bep.split("/")[2]
         name = '.'.join(bep.split("/")[-1].split('.')[0:-1])
