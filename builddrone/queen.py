@@ -27,7 +27,10 @@ def availible_jobs(name="All"):
         q['jobid'] = mk_id(name, arch, gcc, 6) 
         return q
     else:
-        return db
+        x = db.copy()
+        if 'jobs' in x:
+            del x['jobs'] # This returns the database minus the jobs storage.
+        return x
 
 # @route('/get_job')
 @route('/pkg/:name')
@@ -67,11 +70,20 @@ def mk_id(name, arch, gcc, length=6):
     jobid = name +'-'+ arch +'-'+ gcc +'-'+ u
     return jobid
 
-@route("/completed/:job_id/:blobref")
-def recieve_blob(job_id, blobref):
+@post('/completed')
+def recieve_blob():
+    db = get_db()
+    info = json.loads(request.forms.get('json'))
     if 'jobs' not in  get_db():
         get_db()['jobs'] = {}
-    get_db()['jobs'][job_id] = {'status': 'completed', 'blob': blobref}
+    db['jobs'][info['job_id']] = {'status': 'completed', 'blob': info['blobref'], 'date': time.time()}
+    which = db[info['project']]['revs'][info['branch']][info['sha']]
+    which['Builds'] += 1
+    if 'Jobs' in which:
+        which['Jobs'].append(info['job_id'])
+    else:
+        which['Jobs'] = [info['job_id']]
+
 
 @route("/blob/:job_id")
 def give_blob(job_id):

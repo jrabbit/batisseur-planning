@@ -37,6 +37,11 @@ class leng_tche(Daemon):
                 self.notbuilding = True
             else:
                 pass
+    def process_jobs(self, jobs):
+        "Return the first job that the user wants"
+        for job in jobs:
+            if self.do_we_want(job):
+                return job            
     def do_haikuport(self, name):
         self.notbuilding = False
         popen_data = util.haikuporter_build(name)
